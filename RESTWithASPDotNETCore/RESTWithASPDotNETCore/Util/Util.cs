@@ -14,6 +14,18 @@
             return result;
         }
 
+        public static long ConvertToLong(string number)
+        {
+            if (long.TryParse(number,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.NumberFormatInfo.InvariantInfo,
+                out long result))
+            {
+                return result;
+            }
+            return result;
+        }
+
         public static double ConvertToDouble(string number)
         {
             if (double.TryParse(number,

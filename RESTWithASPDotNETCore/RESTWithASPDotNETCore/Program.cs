@@ -1,3 +1,5 @@
+using RESTWithASPDotNETCore.Services.Implementations;
+
 namespace RESTWithASPDotNETCore
 {
     public class Program
@@ -9,6 +11,8 @@ namespace RESTWithASPDotNETCore
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddScoped<IPersonService, PersonServiceImplementation>();
 
             var app = builder.Build();
 
