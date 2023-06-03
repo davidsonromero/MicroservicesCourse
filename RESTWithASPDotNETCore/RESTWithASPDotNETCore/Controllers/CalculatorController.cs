@@ -61,6 +61,18 @@ namespace RESTWithASPDotNETCore.Controllers
             return BadRequest("Invalid input!");
         }
 
+        [HttpGet("mean/{firstNumber}/{secondNumber}")]
+        public IActionResult Mean(string firstNumber, string secondNumber)
+        {
+            if (Util.Util.IsNumeric(firstNumber) && Util.Util.IsNumeric(secondNumber))
+            {
+                decimal sum = (Util.Util.ConvertToDecimal(firstNumber) + Util.Util.ConvertToDecimal(secondNumber)) / 2;
+                return Ok(sum.ToString());
+            }
+
+            return BadRequest("Invalid input!");
+        }
+
         [HttpGet("sqrt/{num}")]
         public IActionResult Sqrt(string num)
         {
