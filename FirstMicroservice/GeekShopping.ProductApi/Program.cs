@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 //DB Connection
-var connection = builder.Configuration["MySqlConnection:MySqlConnectionString"];
+string connection = builder.Configuration["MySqlConnection:MySqlConnectionString"];
 
 builder.Services.AddDbContext<MySqlContext>(options => {
     options.UseMySql(connection, 
@@ -28,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,6 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
