@@ -1,5 +1,8 @@
 ﻿using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
+using GeekShopping.Web.Utils;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeekShopping.Web.Controllers
@@ -13,9 +16,11 @@ namespace GeekShopping.Web.Controllers
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
         }
 
+        [Authorize]
         public async Task<IActionResult> ProductIndex()
         {
-            IEnumerable<ProductModel> products = await _productService.FindAllProducts();
+            string? token = await HttpContext.GetTokenAsync("access_token");
+            IEnumerable<ProductModel> products = await _productService.FindAllProducts(token ?? "");
             return View(products);
         }
 
@@ -24,12 +29,14 @@ namespace GeekShopping.Web.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProductCreate(ProductModel model)
         {
             if (ModelState.IsValid) 
             {
-                ProductModel response = await _productService.CreateProduct(model);
+                string? token = await HttpContext.GetTokenAsync("access_token");
+                ProductModel response = await _productService.CreateProduct(model, token ?? "");
                 if (response != null) return RedirectToAction(nameof(ProductIndex));
             }
             return View(model);
@@ -37,33 +44,41 @@ namespace GeekShopping.Web.Controllers
 
         public async Task<IActionResult> ProductUpdate(long Id)
         {
-            ProductModel model = await _productService.FindProductById(Id);
+            string? token = await HttpContext.GetTokenAsync("access_token");
+            ProductModel model = await _productService.FindProductById(Id, token ?? "");
             if (model != null) return View(model);
             return NotFound(Id);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductModel model)
         {
             if (ModelState.IsValid)
             {
-                ProductModel response = await _productService.UpdateProduct(model);
+                string? token = await HttpContext.GetTokenAsync("access_token");
+                ProductModel response = await _productService.UpdateProduct(model, token ?? "");
                 if (response != null) return RedirectToAction(nameof(ProductIndex));
             }
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> ProductDelete(long Id)
         {
-            ProductModel model = await _productService.FindProductById(Id);
+            string? token = await HttpContext.GetTokenAsync("access_token");
+            ProductModel model = await _productService.FindProductById(Id, token ?? "");
             if (model != null) return View(model);
             return NotFound(Id);
         }
 
+        
         [HttpPost]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ProductDelete(ProductModel Model)
         {
-            bool response = await _productService.DeleteProductById(Model.Id);
+            string? token = await HttpContext.GetTokenAsync("access_token");
+            bool response = await _productService.DeleteProductById(Model.Id, token ?? "");
             if (response) return RedirectToAction(nameof(ProductIndex));
             return View(Model);
         }
