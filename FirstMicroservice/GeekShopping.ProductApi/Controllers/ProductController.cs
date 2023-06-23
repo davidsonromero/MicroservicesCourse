@@ -15,11 +15,10 @@ namespace GeekShopping.ProductApi.Controllers
 
         public ProductController(IProductRepository repository)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository)); 
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<ProductVO>>> FindAll()
         {
             IEnumerable<ProductVO> products = await _repository.FindAll();
